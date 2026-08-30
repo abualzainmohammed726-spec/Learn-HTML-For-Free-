@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
+  <title>About · HTML Mastery</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="images/logo.png" type="image/png" />
+</head>
+<body>
+
+<div class="app">
+  <header class="app-header">
+    <img src="images/logo.png" alt="HTML Mastery logo" class="logo" />
+    <div>
+      <h1>◈ html·mastery</h1>
+      <div class="subhead">
+        <span>about this project</span>
+        <span class="badge">v2 · mobile ready</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <a href="index.html">📘 Lessons</a>
+    <a href="about.html" class="active">ℹ️ About</a>
+  </nav>
+
+  <section style="margin-top: 1.5rem; line-height: 1.8; color: #ccd8e6;">
+    <h2 style="font-weight: 500; font-size: 1.6rem; margin-bottom: 0.5rem; background: linear-gradient(145deg, #b8cdff, #7aa2f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">What is this?</h2>
+    <p style="margin-bottom: 1rem;">
+      <strong>HTML Mastery</strong> is an interactive learning tool built to help beginners understand the core building blocks of the web.
+      It combines static examples with live code playgrounds so you can experiment and see results immediately.
+    </p>
+    <p style="margin-bottom: 1rem;">
+      The project uses a clean, dark theme and is fully responsive – it works great on both desktop and mobile devices.
+    </p>
+    <h3 style="font-weight: 500; font-size: 1.2rem; margin: 1.2rem 0 0.4rem; color: #b8cdff;">Technologies used</h3>
+    <ul style="list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; padding-left: 0;">
+      <li style="background: #1b232d; padding: 0.2rem 1rem; border-radius: 40px; border: 1px solid #2b3643;">HTML5</li>
+      <li style="background: #1b232d; padding: 0.2rem 1rem; border-radius: 40px; border: 1px solid #2b3643;">CSS3 (custom properties, flexbox, grid)</li>
+      <li style="background: #1b232d; padding: 0.2rem 1rem; border-radius: 40px; border: 1px solid #2b3643;">Vanilla JavaScript</li>
+      <li style="background: #1b232d; padding: 0.2rem 1rem; border-radius: 40px; border: 1px solid #2b3643;">Discord Webhook (for sign‑up demo)</li>
+    </ul>
+    <p style="margin-top: 1.2rem; color: #8f9bb0;">
+      Made with ❤️ for learning and teaching.
+    </p>
+  </section>
+</div>
+
+</body>
+</html>
